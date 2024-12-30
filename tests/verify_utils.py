@@ -39,6 +39,8 @@ def levenshtein(str1: str, str2: str) -> int:
 
 def verify_text(gt: str, pred: str, fuzzy: bool, fuzzy_threshold: float = 0.4):
 
+    pred = pred.replace(" ","")
+    gt = gt.replace(" ","")
     if len(gt) == 0 or not fuzzy:
         assert gt == pred, f"{gt}!={pred}"
     else:

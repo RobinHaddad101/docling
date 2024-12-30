@@ -4,7 +4,7 @@
   </a>
 </p>
 
-# Docling
+# Docling with GoogleOCR
 
 <p align="center">
   <a href="https://trendshift.io/repositories/12132" target="_blank"><img src="https://trendshift.io/api/badge/repositories/12132" alt="DS4SD%2Fdocling | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
@@ -23,6 +23,7 @@
 [![PyPI Downloads](https://static.pepy.tech/badge/docling/month)](https://pepy.tech/projects/docling)
 
 Docling parses documents and exports them to the desired format with ease and speed.
+This package differs from the main Docling package as it also includes the Google OCR option.
 
 ## Features
 
@@ -30,7 +31,7 @@ Docling parses documents and exports them to the desired format with ease and sp
 * 📑 Advanced PDF document understanding including page layout, reading order & table structures
 * 🧩 Unified, expressive [DoclingDocument](https://ds4sd.github.io/docling/concepts/docling_document/) representation format
 * 🤖 Easy integration with 🦙 LlamaIndex & 🦜🔗 LangChain for powerful RAG / QA applications
-* 🔍 OCR support for scanned PDFs
+* 🔍 OCR support for scanned PDFs with multiple ocr engines.
 * 💻 Simple and convenient CLI
 
 Explore the [documentation](https://ds4sd.github.io/docling/) to discover plenty examples and unlock the full power of Docling!
@@ -43,9 +44,9 @@ Explore the [documentation](https://ds4sd.github.io/docling/) to discover plenty
 
 ## Installation
 
-To use Docling, simply install `docling` from your package manager, e.g. pip:
+To use Docling, simply install `extended-docling` from your package manager, e.g. pip:
 ```bash
-pip install docling
+pip install extended-docling
 ```
 
 Works on macOS, Linux and Windows environments. Both x86_64 and arm64 architectures.
@@ -57,11 +58,21 @@ More [detailed installation instructions](https://ds4sd.github.io/docling/instal
 To convert individual documents, use `convert()`, for example:
 
 ```python
-from docling.document_converter import DocumentConverter
+from docling.datamodel.base_models import InputFormat
+from docling.document_converter import DocumentConverter, PdfFormatOption
+from docling.datamodel.pipeline_options import PdfPipelineOptions, GoogleOcrOptions
 
-source = "https://arxiv.org/pdf/2408.09869"  # document per local path or URL
-converter = DocumentConverter()
-result = converter.convert(source)
+pipeline_options = PdfPipelineOptions()
+pipeline_options.ocr_options = GoogleOcrOptions()
+pipeline_options.ocr_options.force_full_page_ocr = True
+doc_converter = DocumentConverter(
+    format_options={
+        InputFormat.PDF: PdfFormatOption(pipeline_options=pipeline_options)
+    }
+)
+
+source = "https://arxiv.org/pdf/2408.09869"
+result = doc_converter.convert(source)
 print(result.document.export_to_markdown())  # output: "## Docling Technical Report[...]"
 ```
 
